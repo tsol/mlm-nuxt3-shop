@@ -6,7 +6,7 @@
   <v-table>
     <thead>
       <tr>
-        <th class="text-left">
+        <th v-if="!mobile" class="text-left">
           Товар
         </th>
         <th class="text-left">
@@ -16,35 +16,35 @@
           Цена
         </th>
         <th class="text-left">
-          Количество
+          {{ mobile ? 'Кол-во' : 'Количество' }}
         </th>
-        <th class="text-left">
+        <th v-if="!mobile" class="text-left">
           Стоимость
         </th>
-        <th class="text-left">
-          Удалить
+        <th class="text-center">
+          {{ mobile ? 'X' : 'Удалить' }}
         </th>
       </tr>
     </thead>
     <tbody v-if="!empty">
       <tr v-for="item in items" :key="item.id">
-        <td>
-          <v-img :src="item.thumbnailUrl" height="100px" cover></v-img>
+        <td v-if="!mobile">
+          <v-img class="ma-1" :src="item.thumbnailUrl" height="100px" cover></v-img>
         </td>
         <td>{{ item.name }}</td>
         <td>{{ item.price }}</td>
         <td class="text-center">
-          <v-btn density="compact" icon="mdi-minus" @click="cart.decrement(item.id)"></v-btn>
+          <v-btn v-if="!mobile" density="compact" icon="mdi-minus" @click="cart.decrement(item.id)"></v-btn>
           <span class="space"> {{ item.quantity }} </span>
-          <v-btn density="compact" icon="mdi-plus" @click="cart.increment(item.id)"></v-btn>
+          <v-btn v-if="!mobile" density="compact" icon="mdi-plus" @click="cart.increment(item.id)"></v-btn>
         </td>
-        <td>{{ item.price * item.quantity }}</td>
-        <td>
-          <v-btn color="error" @click="cart.remove(item.id)">Удалить</v-btn>
+        <td v-if="!mobile">{{ item.price * item.quantity }}</td>
+        <td class="text-center">
+          <v-btn color="error" @click="cart.remove(item.id)">{{ mobile ? 'X' : 'Удалить' }}</v-btn>
         </td>
       </tr>
       <tr>
-        <td colspan="3" class="text-right">
+        <td :colspan="mobile ? 2 : 3" class="text-right">
           Итого:
         </td>
         <td class="text-center">
@@ -53,12 +53,11 @@
         <td>
           {{ cart.totalPrice }} р.
         </td>
-        <td></td>
       </tr>
     </tbody>
     <tbody v-else>
       <tr>
-        <td colspan="6" class="text-center">
+        <td :colspan="mobile ? 4 : 6" class="text-center">
           Корзина пуста
         </td>
       </tr>
@@ -69,6 +68,9 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
 import { useCart } from '~/store/useCart';
+
+import { useDisplay } from 'vuetify'
+const { mobile } = useDisplay();
 
 useBreadcrumbs().setCrumbs([{ title: 'Корзина', href: '/cart' }]);
 
