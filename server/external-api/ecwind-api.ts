@@ -57,7 +57,7 @@ class ExternalApi implements IExternalApi {
       const res = await fetch(this.baseUrl + url, { method: 'GET', headers: this.headers });
 
       if (! res.ok) {
-        console.log('External_Fetch_Status:', url, res.status);
+        console.log('External_Fetch_Status:', this.baseUrl + url, res.status);
         return null;
       }
 
